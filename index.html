@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="La mejor tienda de chocolates artesanales" />
+    <meta name="author" content="Tienda de Chocolates" />
+    <title>ChocoDelights - Tienda de Chocolates</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#page-top">ChocoDelights</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menú
+                <i class="fas fa-bars ms-1"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#products">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">Sobre Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Masthead-->
+    <header class="masthead">
+        <div class="container">
+            <div class="masthead-subheading">Bienvenidos a ChocoDelights!</div>
+            <div class="masthead-heading text-uppercase">Chocolate Artesanal, Puro Placer</div>
+            <a class="btn btn-primary btn-xl text-uppercase" href="#products">Explorar Chocolates</a>
+            <!-- Botón para obtener la ubicación -->
+            <button onclick="getLocation()" class="btn btn-secondary btn-xl text-uppercase mt-3">Obtener Mi Ubicación</button>
+            <p id="location-info" style="color: #fff; margin-top: 10px;"></p>
+        </div>
+    </header>
+    <!-- Mapa -->
+    <section class="page-section">
+        <div class="container">
+            <h2 class="text-center text-uppercase">Ubicación en el Mapa</h2>
+            <div id="map" style="height: 400px; width: 100%; margin-top: 20px;"></div>
+        </div>
+    </section>
+    <!-- Products Section -->
+    <section class="page-section" id="products">
+        <div class="container">
+            <div class="text-center">
+                <h2 class="section-heading text-uppercase">Nuestros Productos</h2>
+                <h3 class="section-subheading text-muted">Descubre la variedad de chocolates artesanales.</h3>
+            </div>
+            <div class="row text-center">
+                <!-- Productos listados -->
+            </div>
+        </div>
+    </section>
+    <!-- Footer-->
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 text-lg-start">Copyright &copy; ChocoDelights 2023</div>
+                <div class="col-lg-4 my-3 my-lg-0">
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a class="link-dark text-decoration-none me-3" href="#!">Política de Privacidad</a>
+                    <a class="link-dark text-decoration-none" href="#!">Términos de Uso</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- JavaScript de Geolocalización y Mapa -->
+    <script>
+        function getLocation() {
+            const locationInfo = document.getElementById("location-info");
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                locationInfo.innerHTML = "La geolocalización no es compatible con este navegador.";
+            }
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            document.getElementById("location-info").innerHTML = `Latitud: ${latitude}, Longitud: ${longitude}`;
+            
+            // Inicializa el mapa centrado en la ubicación del usuario
+            const map = L.map('map').setView([latitude, longitude], 15);
+
+            // Capa de mapa de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Añade un marcador en la posición del usuario
+            L.marker([latitude, longitude]).addTo(map)
+                .bindPopup("Estás aquí")
+                .openPopup();
+        }
+
+        function showError(error) {
+            const locationInfo = document.getElementById("location-info");
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    locationInfo.innerHTML = "El usuario denegó la solicitud de geolocalización.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    locationInfo.innerHTML = "La información de ubicación no está disponible.";
+                    break;
+                case error.TIMEOUT:
+                    locationInfo.innerHTML = "La solicitud de ubicación ha caducado.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    locationInfo.innerHTML = "Se ha producido un error desconocido.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
